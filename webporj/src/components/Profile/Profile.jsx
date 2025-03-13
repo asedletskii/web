@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './Profile.css';
+import { useAuth } from '../Auth/Auth';
 
 const Profile = () => {
+    const { user } = useAuth();
     const [lists, setLists] = useState([
         {
             id: 1,
@@ -34,6 +36,19 @@ const Profile = () => {
             ]
         }
     ]);
+
+    // Load user lists from localStorage
+    useEffect(() => {
+        const savedLists = localStorage.getItem(`wishlifyLists_${user.id}`);
+        if (savedLists) {
+            setLists(JSON.parse(savedLists));
+        }
+    }, [user.id]);
+
+    // Save lists to localStorage when they change
+    useEffect(() => {
+        localStorage.setItem(`wishlifyLists_${user.id}`, JSON.stringify(lists));
+    }, [lists, user.id]);
 
     const [showCreateList, setShowCreateList] = useState(false);
     const [newListName, setNewListName] = useState('');
@@ -129,16 +144,25 @@ const Profile = () => {
         });
     };
 
+    // Create a profile avatar with user initials
+    const getInitials = (name) => {
+        if (!name) return '';
+        return name.charAt(0).toUpperCase();
+    };
+
     return (
         <div className="wislify-container">
             <h1 className="wislify-title">Мой профиль</h1>
 
             {/* Секция профиля */}
             <div className="profile-section">
-                <div className="profile-image"></div>
+                <div className="profile-image">
+                    {getInitials(user.username)}
+                </div>
                 <div>
-                    <h2 className="profile-name">Имя</h2>
+                    <h2 className="profile-name">{user.username}</h2>
                     <p className="profile-stats">Кол-во списков: {lists.length} (статистика)</p>
+                    <p className="profile-email">{user.email}</p>
                 </div>
             </div>
 
@@ -192,6 +216,7 @@ const Profile = () => {
                 </div>
             </div>
 
+            {/* Rest of the component remains the same... */}
             {/* Модальное окно создания списка */}
             {showCreateList && (
                 <div className="modal">
