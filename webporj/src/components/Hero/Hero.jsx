@@ -9,6 +9,8 @@ export default function Hero() {
                 <p className="subHerotext">Умный список простых желаний</p>
                 <Button>Создать список!</Button>
             </div>
+            <div className="right">
+            </div>
         </section>
     )
 }

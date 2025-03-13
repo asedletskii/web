@@ -3,7 +3,7 @@ import "./About.css"
 import CardMember from "./CardMember";
 import React from "react";
 
-    const Team = () => {
+const About = () => {
         const teamMembers = [
             {
                 photo: 'https://i.pinimg.com/originals/c7/11/15/c7111512016083ed6afd260e4ccbc6fd.jpg', // URL фото участника
@@ -74,4 +74,4 @@ import React from "react";
         )
         ;
     };
-export default Team
+export default About

@@ -12,24 +12,16 @@ export default function Header() {
     const navigate = useNavigate();
 
     const handleAuthClick = () => {
-        setInitialAuthMode('register');
-        setShowAuthModal(true);
-    };
-
-    const handleLoginClick = () => {
-        setInitialAuthMode('login');
         setShowAuthModal(true);
     };
 
     const handleAuthSuccess = (userData) => {
-        // The AuthModal component will handle updating the user context
         setShowAuthModal(false);
     };
 
     const handleLogout = () => {
         logout();
         setShowProfileMenu(false);
-        // Redirect to home if currently on profile page
         if (window.location.pathname === '/profile') {
             navigate('/');
         }
@@ -82,8 +74,7 @@ export default function Header() {
                     </>
                 ) : (
                     <>
-                        <Button onClick={handleLoginClick}>Войти</Button>
-                        <Button className="signup" onClick={handleAuthClick}>Регистрация</Button>
+                        <Button className="signup" onClick={handleAuthClick}>Войти</Button>
                     </>
                 )}
             </div>

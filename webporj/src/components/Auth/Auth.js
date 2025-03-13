@@ -113,6 +113,7 @@ export const Registration = ({ onClose, onSwitchToLogin, onRegisterSuccess }) =>
 
 // Login Component
 export const Login = ({ onClose, onSwitchToRegistration, onLoginSuccess }) => {
+    // ... оставляем без изменений
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -154,44 +155,47 @@ export const Login = ({ onClose, onSwitchToRegistration, onLoginSuccess }) => {
         setError('Неверный email или пароль');
     };
 
-    return (
-        <div className="auth-form">
-            <h2>Вход в аккаунт</h2>
-            {error && <div className="auth-error">{error}</div>}
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="email">Электронная почта</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="Введите email"
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Пароль</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        placeholder="Введите пароль"
-                    />
-                </div>
-                <div className="auth-buttons">
-                    <button type="button" onClick={onClose} className="button">Отмена</button>
-                    <button type="submit" className="button button-primary">Войти</button>
-                </div>
-            </form>
-            <p className="auth-switch">
-                Нет аккаунта? <button onClick={onSwitchToRegistration} className="link-button">Зарегистрироваться</button>
-            </p>
-        </div>
-    );
-};
+    // Login Component
+
+
+        return (
+            <div className="auth-form">
+                <h2>Вход в аккаунт</h2>
+                {error && <div className="auth-error">{error}</div>}
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="email">Электронная почта</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="Введите email"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Пароль</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="Введите пароль"
+                        />
+                    </div>
+                    <div className="auth-buttons">
+                        <button type="button" onClick={onClose} className="button">Отмена</button>
+                        <button type="submit" className="button button-primary">Войти</button>
+                    </div>
+                </form>
+                <p className="auth-switch">
+                    Нет аккаунта? <button onClick={onSwitchToRegistration} className="link-button">Зарегистрируйтесь!</button>
+                </p>
+            </div>
+        );
+    };
 
 // AuthModal Component
 export const AuthModal = ({ isOpen, onClose, initialMode = 'login', onAuthSuccess }) => {
