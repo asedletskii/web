@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import './Auth.css';
 import { createContext, useContext, useEffect } from 'react';
 
+// Backend API URL
+const API_URL = 'http://localhost:5000';
+
 // Registration Component
 export const Registration = ({ onClose, onSwitchToLogin, onRegisterSuccess }) => {
     const [formData, setFormData] = useState({
@@ -11,6 +14,7 @@ export const Registration = ({ onClose, onSwitchToLogin, onRegisterSuccess }) =>
         username: ''
     });
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({
@@ -19,35 +23,55 @@ export const Registration = ({ onClose, onSwitchToLogin, onRegisterSuccess }) =>
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setIsLoading(true);
 
         // Validation
         if (!formData.email || !formData.password || !formData.confirmPassword || !formData.username) {
             setError('Все поля должны быть заполнены');
+            setIsLoading(false);
             return;
         }
 
         if (formData.password !== formData.confirmPassword) {
             setError('Пароли не совпадают');
+            setIsLoading(false);
             return;
         }
 
-        // Here you would typically send the registration data to your backend
-        // For now, we'll simulate a successful registration
-        const user = {
-            email: formData.email,
-            username: formData.username,
-            id: Date.now() // Mock user ID
-        };
+        try {
+            // Send registration request to backend
+            const response = await fetch(`${API_URL}/api/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: formData.email,
+                    password: formData.password,
+                    username: formData.username
+                }),
+            });
 
-        // Store user in localStorage (for demo purposes)
-        localStorage.setItem('wishlifyUser', JSON.stringify(user));
+            const data = await response.json();
 
-        // Call the success callback
-        onRegisterSuccess(user);
-        onClose();
+            if (!response.ok) {
+                throw new Error(data.error || 'Ошибка при регистрации');
+            }
+
+            // Store user in localStorage
+            localStorage.setItem('wishlifyUser', JSON.stringify(data));
+
+            // Call the success callback
+            onRegisterSuccess(data);
+            onClose();
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -101,7 +125,13 @@ export const Registration = ({ onClose, onSwitchToLogin, onRegisterSuccess }) =>
                 </div>
                 <div className="auth-buttons">
                     <button type="button" onClick={onClose} className="button">Отмена</button>
-                    <button type="submit" className="button button-primary">Зарегистрироваться</button>
+                    <button
+                        type="submit"
+                        className="button button-primary"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
+                    </button>
                 </div>
             </form>
             <p className="auth-switch">
@@ -113,12 +143,12 @@ export const Registration = ({ onClose, onSwitchToLogin, onRegisterSuccess }) =>
 
 // Login Component
 export const Login = ({ onClose, onSwitchToRegistration, onLoginSuccess }) => {
-    // ... оставляем без изменений
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({
@@ -127,75 +157,94 @@ export const Login = ({ onClose, onSwitchToRegistration, onLoginSuccess }) => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setIsLoading(true);
 
         // Validation
         if (!formData.email || !formData.password) {
             setError('Все поля должны быть заполнены');
+            setIsLoading(false);
             return;
         }
 
-        // Check if user exists (simulated)
-        const storedUser = localStorage.getItem('wishlifyUser');
+        try {
+            // Send login request to backend
+            const response = await fetch(`${API_URL}/api/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: formData.email,
+                    password: formData.password
+                }),
+            });
 
-        if (storedUser) {
-            const user = JSON.parse(storedUser);
+            const data = await response.json();
 
-            // In a real app, you would check the password on the server
-            // For this demo, we'll just check if the email matches
-            if (user.email === formData.email) {
-                onLoginSuccess(user);
-                onClose();
-                return;
+            if (!response.ok) {
+                throw new Error(data.error || 'Ошибка при входе');
             }
+
+            // Store user in localStorage
+            localStorage.setItem('wishlifyUser', JSON.stringify(data));
+
+            // Call success callback
+            onLoginSuccess(data);
+            onClose();
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
         }
-
-        setError('Неверный email или пароль');
     };
 
-    // Login Component
-
-
-        return (
-            <div className="auth-form">
-                <h2>Вход в аккаунт</h2>
-                {error && <div className="auth-error">{error}</div>}
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="email">Электронная почта</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="Введите email"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="password">Пароль</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder="Введите пароль"
-                        />
-                    </div>
-                    <div className="auth-buttons">
-                        <button type="button" onClick={onClose} className="button">Отмена</button>
-                        <button type="submit" className="button button-primary">Войти</button>
-                    </div>
-                </form>
-                <p className="auth-switch">
-                    Нет аккаунта? <button onClick={onSwitchToRegistration} className="link-button">Зарегистрируйтесь!</button>
-                </p>
-            </div>
-        );
-    };
+    return (
+        <div className="auth-form">
+            <h2>Вход в аккаунт</h2>
+            {error && <div className="auth-error">{error}</div>}
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="email">Электронная почта</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Введите email"
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="password">Пароль</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="Введите пароль"
+                    />
+                </div>
+                <div className="auth-buttons">
+                    <button type="button" onClick={onClose} className="button">Отмена</button>
+                    <button
+                        type="submit"
+                        className="button button-primary"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Вход...' : 'Войти'}
+                    </button>
+                </div>
+            </form>
+            <p className="auth-switch">
+                Нет аккаунта? <button onClick={onSwitchToRegistration} className="link-button">Зарегистрируйтесь!</button>
+            </p>
+        </div>
+    );
+};
 
 // AuthModal Component
 export const AuthModal = ({ isOpen, onClose, initialMode = 'login', onAuthSuccess }) => {
@@ -225,19 +274,38 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login', onAuthSucces
 };
 
 // AuthContext for managing authentication state across the app
-
-
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // Get user profile from API
+    const fetchUserProfile = async (userId) => {
+        try {
+            const response = await fetch(`${API_URL}/api/users/${userId}`);
+            if (response.ok) {
+                const userData = await response.json();
+                setUser(userData);
+                localStorage.setItem('wishlifyUser', JSON.stringify(userData));
+            } else {
+                // If user not found in API, remove from localStorage
+                logout();
+            }
+        } catch (err) {
+            console.error('Error fetching user profile:', err);
+        }
+    };
+
     useEffect(() => {
         // Check if user is already logged in
         const storedUser = localStorage.getItem('wishlifyUser');
         if (storedUser) {
-            setUser(JSON.parse(storedUser));
+            const userData = JSON.parse(storedUser);
+            setUser(userData);
+
+            // Verify user with backend (optional)
+            // fetchUserProfile(userData.id);
         }
         setLoading(false);
     }, []);
@@ -260,5 +328,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => {
-    return useContext(AuthContext);
-};
+    return
