@@ -1,0 +1,44 @@
+.button-container {
+    display: flex;
+    top: 1.6rem;
+    right: 3rem;
+    flex-wrap: wrap-reverse;
+}
+
+ header{
+     display: flex;
+     justify-content: space-between; /* Текст слева, кнопки справа */
+     align-items: center; /* Выравнивание по вертикали */
+     flex-wrap: wrap; /* Перенос элементов при нехватке места */
+     min-height: 60px;
+     text-decoration: none;
+     outline: none;
+ }
+
+ .text {
+     font-size: 1.2rem;
+     font-weight: bold;
+     text-decoration: none;
+     outline: none;
+     color: black;
+ }
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column; /* Расположение по вертикали */
+        justify-content: center; /* Центрирование по горизонтали */
+        align-items: center; /* Центрирование по вертикали */
+        text-align: center; /* Центрирование текста */
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center; /* Центрирование кнопок по горизонтали */
+    }
+
+    .text {
+        font-size: 3rem;
+        padding: 0;
+        margin: 0;
+    }
+}

@@ -1,0 +1,54 @@
+.Herotext {
+    font-size: 5rem;
+    padding: 1rem;
+    margin: 0.1rem;
+}
+
+.subHerotext {
+    font-size: 1rem;
+}
+
+/* Hero Section */
+.hero {
+    display: flex; /* Используем flexbox для разделения на две части */
+    height: 70vh; /* Высота секции 100% от экрана */
+    align-items: center; /* Центрирование контента по вертикали */
+    padding: 2rem;
+    justify-content: space-between; /* Разделение на левую и правую часть */
+    flex-wrap: wrap; /* Размещение элементов на несколько строк при малых разрешениях */
+    border-bottom: 1px solid black;
+}
+
+.left {
+    width: 45%; /* Левая часть будет занимать 45% ширины */
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center; /* Центрирование текста по вертикали */
+}
+
+.left .button {
+    font-size: 1.5rem;
+    border-radius: 2rem;
+}
+
+.right {
+    width: 45%; /* Правая часть будет занимать 45% ширины */
+    display: flex;
+    justify-content: center; /* Центрирование изображения */
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Медиазапрос для маленьких экранов */
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column; /* Снизу вверх */
+        justify-content: center; /* Центрирование контента */
+        text-align: center; /* Центрирование текста */
+    }
+    .left, .right {
+        width: 100%; /* Каждая часть будет занимать 100% */
+        margin-bottom: 2rem;
+    }
+}

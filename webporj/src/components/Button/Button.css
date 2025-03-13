@@ -1,0 +1,33 @@
+.button{
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 20px;
+    transition: all 0.3s;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.7rem;
+    margin: 1rem 1rem;
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+}
+
+.button-container .signup{
+    background-color: #000000;
+    color: white;
+}
+
+.button-container .signup:hover{
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.button:hover {
+    background-color: #000000;
+    color: white;
+}
+
+.button:active {
+    background: #fff;
+    color: #000000;
+}
