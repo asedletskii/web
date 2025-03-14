@@ -328,4 +328,5 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => {
-    return
+    return useContext(AuthContext);
+};
